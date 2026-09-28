@@ -2,9 +2,13 @@ package neoproxy.neolink.core;
 
 import neoproxy.neolink.NeoLink;
 import neoproxy.neolink.config.LanguageData;
+import neoproxy.neolink.util.LogSink;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.ArgumentCaptor;
 import top.ceroxe.api.neolink.NeoLinkAPI.TransportProtocol;
 import top.ceroxe.api.neolink.NeoLinkAPI;
 import top.ceroxe.api.neolink.NeoLinkCfg;
@@ -35,12 +39,62 @@ import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.RETURNS_SELF;
+import neoproxy.neolink.state.ConnectionSettings;
+import neoproxy.neolink.state.ConnectionState;
 import neoproxy.neolink.state.FeatureSettings;
 import neoproxy.neolink.state.FeatureState;
 import neoproxy.neolink.state.RuntimeState;
 
 @DisplayName("NeoLinkCoreRunnerTest")
 class NeoLinkCoreRunnerTest {
+
+    @ParameterizedTest
+    @CsvSource({
+            "192.168.1.100, 53554, 192.168.1.100:53554",
+            "127.0.0.1, 1, 127.0.0.1:1",
+            "localhost, 65535, localhost:65535",
+            "service.example, 8080, service.example:8080",
+            "2001:db8::1, 8080, [2001:db8::1]:8080",
+            "[::1], 8080, [::1]:8080"
+    })
+    void localConnectionFailureLogsTunnelEndpoint(String host, int port, String endpoint) throws Exception {
+        ConnectionSettings previousConnection = ConnectionState.snapshot();
+        var previousLogSink = RuntimeState.logSink();
+        AtomicReference<String> message = new AtomicReference<>();
+        AtomicReference<LogSink.Level> level = new AtomicReference<>();
+        RuntimeState.setLogSink((logLevel, tag, text) -> {
+            level.set(logLevel);
+            message.set(text);
+        });
+        try (var construction = mockConstruction(NeoLinkAPI.class, withSettings().defaultAnswer(RETURNS_SELF))) {
+            ConnectionState.setLocalDomainName(host);
+            NeoLinkAPI api = (NeoLinkAPI) invokePrivate(
+                    "buildTunnel",
+                    new Class<?>[]{NeoLinkCfg.class, AtomicBoolean.class},
+                    new NeoLinkCfg("example.com", 44801, 44802, "test-token", port),
+                    new AtomicBoolean(false)
+            );
+            ArgumentCaptor<Runnable> callback = ArgumentCaptor.forClass(Runnable.class);
+            verify(api).setOnConnectLocalFailure(callback.capture());
+
+            // Later settings edits must not change the endpoint reported by this tunnel.
+            ConnectionState.setLocalDomainName("other.example");
+            ConnectionState.setLocalPort(9000);
+            RuntimeState.setLanguageData(LanguageData.getChineseLanguage());
+            callback.getValue().run();
+            assertEquals("连接本地地址失败：" + endpoint, message.get());
+            assertEquals(LogSink.Level.ERROR, level.get());
+
+            RuntimeState.setLanguageData(new LanguageData());
+            callback.getValue().run();
+            assertEquals("Fail to connect to local address: " + endpoint, message.get());
+        } finally {
+            ConnectionState.apply(previousConnection);
+            RuntimeState.setLogSink(previousLogSink);
+        }
+    }
 
     @AfterEach
     void tearDown() throws Exception {

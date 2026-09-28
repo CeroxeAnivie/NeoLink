@@ -227,6 +227,9 @@ public final class NeoLinkCoreRunner {
             cfg.setLanguage(RuntimeState.languageData().getCurrentLanguage());
         }
 
+        String localEndpoint = formatAddress(InetSocketAddress.createUnresolved(
+                connectionSettings.localDomainName(), cfg.getLocalPort()
+        ));
         NeoLinkAPI api = new NeoLinkAPI(cfg);
         return api.setUnsupportedVersionDecision(response -> FeatureState.snapshot().enableAutoUpdate())
                 .setOnStateChanged(state -> {
@@ -258,7 +261,7 @@ public final class NeoLinkCoreRunner {
                         LogType.ERROR
                 ))
                 .setOnConnectLocalFailure(() -> ClientConsole.say(
-                        languageData().FAIL_TO_CONNECT_LOCALHOST + ConnectionState.snapshot().localPort(),
+                        languageData().FAIL_TO_CONNECT_LOCALHOST + localEndpoint,
                         LogType.ERROR
                 ))
                 .setDebugSink((message, cause) -> {
@@ -356,7 +359,11 @@ public final class NeoLinkCoreRunner {
         if (address == null) {
             return "unknown";
         }
-        return address.getHostString() + ":" + address.getPort();
+        String host = address.getHostString();
+        if (host.contains(":") && !host.startsWith("[")) {
+            host = "[" + host + "]";
+        }
+        return host + ":" + address.getPort();
     }
 
     static String clientFacingApiErrorMessage(String message, Throwable cause) {

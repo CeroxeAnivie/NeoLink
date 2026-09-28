@@ -66,7 +66,7 @@ class LanguageDataTest {
         assertEquals("服务器连接成功", chineseData.CONNECTION_BUILD_UP_SUCCESSFULLY);
         assertEquals("连接以下地址失败：", chineseData.FAIL_TO_BUILD_A_CHANNEL_FROM);
         assertEquals(" 的通道关闭", chineseData.DESTROY);
-        assertEquals("连接本地地址失败：localhost:", chineseData.FAIL_TO_CONNECT_LOCALHOST);
+        assertEquals("连接本地地址失败：", chineseData.FAIL_TO_CONNECT_LOCALHOST);
         assertEquals("开始下载更新。", chineseData.START_TO_DOWNLOAD_UPDATE);
         assertEquals("下载更新成功。", chineseData.DOWNLOAD_SUCCESS);
     }

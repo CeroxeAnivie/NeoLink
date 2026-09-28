@@ -40,7 +40,7 @@ public class LanguageData implements Serializable {
     public String CONNECTION_BUILD_UP_SUCCESSFULLY = "Connection build up successfully";
     public String FAIL_TO_BUILD_A_CHANNEL_FROM = "Fail to build a channel from ";
     public String DESTROY = " destroyed";
-    public String FAIL_TO_CONNECT_LOCALHOST = "Fail to connect to localhost:";
+    public String FAIL_TO_CONNECT_LOCALHOST = "Fail to connect to local address: ";
     public String TOO_LONG_LATENCY_MSG = "Delay greater than 200 milliseconds, please note!";
     public String LOAD = "Load ";
     public String AS_A_CERTIFICATE = " as a certificate";
@@ -115,7 +115,7 @@ public class LanguageData implements Serializable {
         languageData.CONNECTION_BUILD_UP_SUCCESSFULLY = "服务器连接成功";
         languageData.FAIL_TO_BUILD_A_CHANNEL_FROM = "连接以下地址失败：";
         languageData.DESTROY = " 的通道关闭";
-        languageData.FAIL_TO_CONNECT_LOCALHOST = "连接本地地址失败：localhost:";
+        languageData.FAIL_TO_CONNECT_LOCALHOST = "连接本地地址失败：";
         languageData.START_TO_DOWNLOAD_UPDATE = "开始下载更新。";
         languageData.DOWNLOAD_SUCCESS = "下载更新成功。";
         languageData.PLEASE_RUN = "请运行 ";
