@@ -1,6 +1,7 @@
-# Gradle
+# Gradle and Kotlin
 .gradle/
 .gradle-home/
+.kotlin/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -25,18 +26,50 @@ bin/
 
 # OS files
 .DS_Store
+Thumbs.db
+Desktop.ini
 
-# Android SDK
+# Android SDK and native build caches
 local.properties
+.cxx/
+.externalNativeBuild/
+
+# Local signing keys and environment configuration
+*.jks
+*.keystore
+/keystore.properties
+/android/keystore.properties
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Local agent instructions and workspace state
+/AGENTS.md
+/.codex/
 
 # NeoLink runtime artifacts
 /logs/
 /config.cfg
 /nodes.json
 /eula.txt
+/desktop/logs/
+/desktop/config.cfg
+/desktop/nodes.json
 /*-env-bundled/
+
+# JVM compilation and diagnostic artifacts
+*.class
+*.hprof
+hs_err_pid*
+replay_pid*
 
 # Temporary files
 all_code.txt
 *.log
 *.temp
+*.tmp
+*.swp
+*.swo
+*~
