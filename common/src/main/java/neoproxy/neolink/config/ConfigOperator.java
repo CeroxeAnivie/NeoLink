@@ -196,6 +196,7 @@ public final class ConfigOperator {
     public static void readAndSetValue() {
         File configFile = new File(WORKING_DIR, CONFIG_FILE_NAME);
         if (!configFile.exists()) {
+            FeatureState.setNkmNodeListUrl("");
             return;
         }
 
@@ -232,6 +233,7 @@ public final class ConfigOperator {
                     reader.getOptional("NKM_NODELIST_URL").orElse("")
             ));
         } catch (Exception e) {
+            FeatureState.setNkmNodeListUrl("");
             throw new IllegalArgumentException("Invalid config.cfg: " + e.getMessage(), e);
         }
     }

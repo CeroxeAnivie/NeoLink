@@ -88,6 +88,12 @@ public final class ClientConsole {
         }
     }
 
+    public static void printConfigFilePath() {
+        ensureLanguageDetected();
+        say(RuntimeState.languageData().CONFIG_FILE_PATH
+                + new File(ConfigOperator.WORKING_DIR, "config.cfg").getAbsolutePath());
+    }
+
     public static String getClientVersionToReport() {
         return FeatureState.snapshot().testUpdate() ? NeoLink.TEST_UPDATE_VERSION : VersionInfo.VERSION;
     }

@@ -92,6 +92,7 @@ public final class NeoLink {
         ClientConsole.initializeLogger(launchOptions.noColor());
         NodeWorkflow.setMessageSink((message, level) -> ClientConsole.say(message, toLogType(level)));
         LanguageManager.detectLanguage();
+        ClientConsole.printConfigFilePath();
         NodeWorkflow.fetchAndSaveNodes();
         CommandLineProcessor.applyNodeSelectionArgs(args);
         NeoNode selectedNode = NodeWorkflow.loadSelectedNodeConfiguration();

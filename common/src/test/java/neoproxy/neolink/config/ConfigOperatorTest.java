@@ -10,6 +10,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -190,7 +191,8 @@ class ConfigOperatorTest {
 
             File generatedConfig = new File(ConfigOperator.WORKING_DIR, "config.cfg");
             assertTrue(generatedConfig.exists());
-            assertTrue(Files.readString(generatedConfig.toPath()).contains("NKM_NODELIST_URL="));
+            String content = Files.readString(generatedConfig.toPath(), StandardCharsets.UTF_8);
+            assertTrue(content.lines().anyMatch("NKM_NODELIST_URL="::equals));
         } finally {
             System.setProperty("user.dir", originalUserDir);
         }

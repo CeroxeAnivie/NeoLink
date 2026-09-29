@@ -107,7 +107,9 @@ cd NeoLink
 
 ### 1. 📝 **通用配置** (`config.cfg`)
 
-第一次运行时程序会在当前工作目录创建 `config.cfg`（如果不存在）。
+桌面端优先使用 **JAR 同目录**下的 `config.cfg` 和 `nodes.json`。该目录只要存在其中一个文件，就作为运行目录；否则检查启动工作目录，最后回退到用户数据目录（Windows：`%LOCALAPPDATA%\NeoLink`，macOS：`~/Library/Application Support/NeoLink`，Linux：`~/.neolink`）。两个文件始终从同一个运行目录读取，不混用其他目录中的文件；缺少 `config.cfg` 时在选定目录创建默认文件。启动日志会显示实际读取的配置文件完整路径。已选中的配置无法读取或内容无效时会报错，不会改用其他目录中的配置。
+
+`NKM_NODELIST_URL` 留空、仅含空白或未配置时，不发送 NKM 请求，保留本地 `nodes.json`；填写时仅请求该地址。修改配置后需要重启客户端。
 
 ```properties
 #把你要连接的 NeoServer 的域名或者公网 ip 放到这里来

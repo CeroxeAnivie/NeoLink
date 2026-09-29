@@ -180,6 +180,7 @@ class NeoLinkViewModel {
         } catch (e: IllegalArgumentException) {
             ConnectionState.apply(originalConnectionState)
             FeatureState.apply(originalFeatureState)
+            FeatureState.setNkmNodeListUrl("")
             initializationError = e.message ?: "未知错误"
         }
 
@@ -188,6 +189,7 @@ class NeoLinkViewModel {
         ClientConsole.initializeLogger(false)
         setupLogRedirector()
         setupNodeWorkflowMessageSink()
+        ClientConsole.printConfigFilePath()
 
         if (initializationError != null) {
             appendSystemLog("配置或参数无效，已回退到安全默认值：$initializationError", surroundWithBlankLines = true)
